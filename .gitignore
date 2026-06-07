@@ -1,0 +1,13 @@
+venv/
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+
+# Large data files — download via download_data.py
+data/*.json
+data/*.parquet
+data/figures/
+
+# Jupyter checkpoints
+.ipynb_checkpoints/
