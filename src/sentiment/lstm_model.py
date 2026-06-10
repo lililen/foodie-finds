@@ -9,12 +9,10 @@ from sklearn.preprocessing import LabelEncoder
 
 class Vocab:
     PAD, UNK = "<PAD>", "<UNK>"
-
     def __init__(self, min_freq=2):
         self.min_freq = min_freq
         self.word2idx = {}
         self.idx2word = []
-
     def build(self, texts):
         counts = Counter()
         for t in texts:
@@ -25,7 +23,6 @@ class Vocab:
                 self.idx2word.append(word)
         self.word2idx = {w: i for i, w in enumerate(self.idx2word)}
         return self
-
     def encode(self, text, max_len=256):
         tokens = text.lower().split()[:max_len]
         ids = [self.word2idx.get(t, 1) for t in tokens]
@@ -35,6 +32,7 @@ class Vocab:
 
     def __len__(self):
         return len(self.idx2word)
+
 
 
 class ReviewDataset(Dataset):
@@ -62,7 +60,6 @@ class BiLSTM(nn.Module):
         )
         self.dropout = nn.Dropout(dropout)
         self.fc = nn.Linear(hidden_dim * 2, num_classes)
-
     def forward(self, x):
         emb = self.dropout(self.embedding(x))
         out, (h, _) = self.lstm(emb)
@@ -85,15 +82,12 @@ class LSTMSentimentModel:
         self.label_encoder = LabelEncoder()
         self.model = None
         self.classes_ = None
-
     def fit(self, texts, labels, val_texts=None, val_labels=None):
         y = self.label_encoder.fit_transform(labels)
         self.classes_ = self.label_encoder.classes_
         self.vocab.build(texts)
-
         dataset = ReviewDataset(texts, y.tolist(), self.vocab, self.max_len)
         loader = DataLoader(dataset, batch_size=self.batch_size, shuffle=True, num_workers=0)
-
         self.model = BiLSTM(
             len(self.vocab), self.embed_dim, self.hidden_dim,
             self.num_layers, len(self.classes_),
@@ -139,11 +133,9 @@ class LSTMSentimentModel:
         logits = self._predict_raw(texts)
         y_pred = logits.argmax(dim=1).numpy()
         return self.label_encoder.inverse_transform(y_pred).tolist()
-
     def predict_proba(self, texts) -> np.ndarray:
         logits = self._predict_raw(texts)
         return torch.softmax(logits, dim=1).numpy()
-
     def timed_predict(self, texts):
         start = time.time()
         preds = self.predict(texts)

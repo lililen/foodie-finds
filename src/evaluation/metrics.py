@@ -28,10 +28,7 @@ def sentiment_report(y_true, y_pred, model_name: str = "") -> dict:
         "model": model_name,
         "accuracy": acc,
         "f1_macro": f1_macro,
-        "f1_weighted": f1_weighted,
-    }
-
-
+        "f1_weighted": f1_weighted,}
 def plot_confusion_matrix(y_true, y_pred, labels, title: str = "", save_path: str = None):
     cm = confusion_matrix(y_true, y_pred, labels=labels)
     fig, ax = plt.subplots(figsize=(6, 5))
@@ -43,7 +40,6 @@ def plot_confusion_matrix(y_true, y_pred, labels, title: str = "", save_path: st
     if save_path:
         fig.savefig(save_path, dpi=150)
     return fig
-
 
 def plot_sentiment_model_comparison(results: list[dict], save_path: str = None):
     df = pd.DataFrame(results)
@@ -62,8 +58,6 @@ def plot_sentiment_model_comparison(results: list[dict], save_path: str = None):
     if save_path:
         fig.savefig(save_path, dpi=150)
     return fig
-
-
 def plot_train_vs_f1(results: list[dict], save_path: str = None):
     df = pd.DataFrame(results)
     fig, ax = plt.subplots(figsize=(7, 5))
@@ -78,7 +72,6 @@ def plot_train_vs_f1(results: list[dict], save_path: str = None):
     if save_path:
         fig.savefig(save_path, dpi=150)
     return fig
-
 
 def tag_report(Y_true, Y_pred, tag_names: list[str], model_name: str = "") -> dict:
     hl = hamming_loss(Y_true, Y_pred)
@@ -109,7 +102,6 @@ def tag_report(Y_true, Y_pred, tag_names: list[str], model_name: str = "") -> di
         "per_label_f1": per_label_f1.tolist(),
         "tag_names": tag_names,
     }
-
 
 def plot_per_label_f1(results: list[dict], tag_names: list[str], save_path: str = None):
     fig, ax = plt.subplots(figsize=(12, 5))
@@ -166,7 +158,6 @@ def plot_match_score_distribution(results_df: pd.DataFrame, query: str = "", sav
         fig.savefig(save_path, dpi=150)
     return fig
 
-
 def plot_score_breakdown(row: pd.Series, save_path: str = None):
     components = {
         "Sentiment": row.get("score_sentiment", 0),
@@ -183,7 +174,5 @@ def plot_score_breakdown(row: pd.Series, save_path: str = None):
     if save_path:
         fig.savefig(save_path, dpi=150)
     return fig
-
-
 def build_comparison_table(results: list[dict]) -> pd.DataFrame:
     return pd.DataFrame(results).set_index("model")

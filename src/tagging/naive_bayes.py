@@ -11,7 +11,6 @@ class NBTaggerModel:
         self.tfidf = TfidfVectorizer(max_features=max_features, ngram_range=ngram_range, sublinear_tf=True)
         self.clf = OneVsRestClassifier(MultinomialNB(alpha=alpha))
         self.tag_names = None
-
     def fit(self, texts, Y, tag_names):
         self.tag_names = tag_names
         X = self.tfidf.fit_transform(texts)
@@ -23,7 +22,6 @@ class NBTaggerModel:
     def predict(self, texts) -> np.ndarray:
         X = self.tfidf.transform(texts)
         return self.clf.predict(X)
-
     def predict_proba(self, texts) -> np.ndarray:
         X = self.tfidf.transform(texts)
         return self.clf.predict_proba(X)

@@ -7,35 +7,33 @@ TAG_NAMES = [
     "Quiet", "Brunch", "Date Night", "Hidden Gem",
     "Aesthetic", "Family-Friendly", "Late Night", "Trendy",
 ]
-
 TAG_COL_MAP = {
     tag: f"tag_{tag.lower().replace(' ', '_').replace('-', '_')}"
     for tag in TAG_NAMES
 }
-
 QUERY_TAG_SYNONYMS = {
-    "quiet":          "Quiet",
-    "peaceful":       "Quiet",
-    "calm":           "Quiet",
-    "brunch":         "Brunch",
-    "breakfast":      "Brunch",
-    "date":           "Date Night",
-    "date night":     "Date Night",
-    "romantic":       "Date Night",
-    "hidden":         "Hidden Gem",
-    "hidden gem":     "Hidden Gem",
-    "underrated":     "Hidden Gem",
-    "aesthetic":      "Aesthetic",
-    "beautiful":      "Aesthetic",
-    "photogenic":     "Aesthetic",
+    "quiet": "Quiet",
+    "peaceful": "Quiet",
+    "calm": "Quiet",
+    "brunch": "Brunch",
+    "breakfast": "Brunch",
+    "date":"Date Night",
+    "date night":"Date Night",
+    "romantic":  "Date Night",
+    "hidden":"Hidden Gem",
+    "hidden gem":"Hidden Gem",
+    "underrated":"Hidden Gem",
+    "aesthetic":"Aesthetic",
+    "beautiful":"Aesthetic",
+    "photogenic":"Aesthetic",
     "instagrammable": "Aesthetic",
-    "family":         "Family-Friendly",
-    "kids":           "Family-Friendly",
-    "late night":     "Late Night",
-    "late":           "Late Night",
-    "trendy":         "Trendy",
-    "hip":            "Trendy",
-    "cool":           "Trendy",
+    "family":"Family-Friendly",
+    "kids":"Family-Friendly",
+    "late night":"Late Night",
+    "late": "Late Night",
+    "trendy": "Trendy",
+    "hip":"Trendy",
+    "cool":"Trendy",
 }
 
 
@@ -48,6 +46,7 @@ def parse_query(query: str) -> dict:
             detected_tags.add(tag)
 
     city = None
+    #cities didnt works somehow. 
     city_patterns = [
         "san francisco", "las vegas", "new york", "los angeles", "chicago",
         "seattle", "austin", "portland", "phoenix", "charlotte", "nashville",
@@ -76,8 +75,6 @@ def parse_query(query: str) -> dict:
         "city": city,
         "cuisine_keywords": cuisine_keywords,
     }
-
-
 def compute_match_scores(
     profiles: pd.DataFrame,
     parsed_query: dict,
@@ -94,7 +91,6 @@ def compute_match_scores(
         }
 
     df = profiles.copy()
-
     if "positive_ratio" not in df.columns:
         df["positive_ratio"] = 0.5
     sentiment_score = df["positive_ratio"].fillna(0.5)
@@ -109,7 +105,6 @@ def compute_match_scores(
         tag_match_score = (tag_scores / len(query_tags)).clip(0, 1)
     else:
         tag_match_score = pd.Series(np.ones(len(df)) * 0.5, index=df.index)
-
     star_col = "avg_stars" if "avg_stars" in df.columns else "stars_business"
     stars_score = ((df[star_col].fillna(3) - 1) / 4).clip(0, 1)
 
@@ -136,7 +131,6 @@ def compute_match_scores(
         stars_score = stars_score[cuisine_mask]
         volume_score = volume_score[cuisine_mask]
         cuisine_score = cuisine_score[cuisine_mask]
-
     query_city = parsed_query.get("city")
     if query_city and "city" in df.columns:
         city_mask = df["city"].str.lower().str.contains(query_city.lower(), na=False)
@@ -146,12 +140,9 @@ def compute_match_scores(
         stars_score = stars_score[city_mask]
         volume_score = volume_score[city_mask]
         cuisine_score = cuisine_score[city_mask]
-
     raw_score = (
-        weights["sentiment"] * sentiment_score
-        + weights["tag_match"] * tag_match_score
-        + weights["stars"] * stars_score
-        + weights["volume"] * volume_score
+        weights["sentiment"] * sentiment_score + weights["tag_match"] * tag_match_score
+        + weights["stars"] * stars_score + weights["volume"] * volume_score
         + weights["cuisine"] * cuisine_score
     )
     df = df.copy()

@@ -12,7 +12,6 @@ class RFTaggerModel:
             RandomForestClassifier(n_estimators=n_estimators, n_jobs=n_jobs, random_state=42)
         )
         self.tag_names = None
-
     def fit(self, texts, Y, tag_names):
         self.tag_names = tag_names
         X = self.tfidf.fit_transform(texts)
@@ -20,7 +19,6 @@ class RFTaggerModel:
         self.clf.fit(X, Y)
         self.train_time_ = time.time() - start
         return self
-
     def predict(self, texts) -> np.ndarray:
         X = self.tfidf.transform(texts)
         return self.clf.predict(X)
@@ -28,7 +26,6 @@ class RFTaggerModel:
     def predict_proba(self, texts) -> np.ndarray:
         X = self.tfidf.transform(texts)
         return self.clf.predict_proba(X)
-
     def timed_predict(self, texts):
         start = time.time()
         preds = self.predict(texts)

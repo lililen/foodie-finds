@@ -8,7 +8,7 @@ from gensim.downloader import load as gensim_load
 
 
 def load_word_embeddings(source="glove-wiki-gigaword-100"):
-    print(f"Loading word embeddings: {source}")
+    print(f"loading word embeddings: {source}")
     return gensim_load(source)
 
 

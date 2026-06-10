@@ -1,9 +1,2 @@
 Download the Yelp Open Dataset from Kaggle:
   https://www.kaggle.com/datasets/yelp-dataset/yelp-dataset
-
-Place the following two files in this directory:
-  - yelp_academic_dataset_review.json
-  - yelp_academic_dataset_business.json
-
-All notebooks fall back to a 2000-row synthetic dataset automatically
-if these files are not present, so you can run without them.

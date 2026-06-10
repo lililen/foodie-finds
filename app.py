@@ -166,10 +166,8 @@ DEFAULT_WEIGHTS = {"sentiment": 0.30, "tag_match": 0.30,
                    "stars": 0.20, "volume": 0.10, "cuisine": 0.10}
 
 CUISINE_LIST = [
-    "Chinese", "Dim Sum", "Cantonese", "Italian", "Mexican", "Japanese",
-    "Thai", "Indian", "French", "Korean", "Mediterranean", "American",
-    "Sushi", "Pizza", "Burgers", "BBQ", "Seafood", "Ramen", "Vietnamese",
-    "Greek", "Middle Eastern", "Taiwanese", "Spanish",
+    "Chinese", "Dim Sum", "Cantonese", "Italian", "Mexican", "Japanese", "Thai", "Indian", "French", "Korean", "Mediterranean", "American",
+    "Sushi", "Pizza", "Burgers", "BBQ", "Seafood", "Ramen", "Vietnamese", "Greek", "Middle Eastern", "Taiwanese", "Spanish",
 ]
 
 def cuisine_label(cats: str, preferred: list[str] = None) -> str:

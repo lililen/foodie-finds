@@ -12,37 +12,21 @@ nltk.download("stopwords", quiet=True)
 nltk.download("wordnet", quiet=True)
 
 TAG_KEYWORDS = {
-    "Quiet": [
-        "quiet", "peaceful", "calm", "serene", "tranquil", "low-key",
-        "relaxed", "mellow", "intimate", "hushed",
+    "Quiet": ["quiet", "peaceful", "calm", "serene", "tranquil", "low-key","relaxed", "mellow", "intimate", "hushed",
     ],
-    "Brunch": [
-        "brunch", "breakfast", "mimosa", "eggs benedict", "pancake",
-        "waffle", "morning", "weekend brunch", "brunch spot",
+    "Brunch": ["brunch", "breakfast", "mimosa", "eggs benedict", "pancake", "waffle", "morning", "weekend brunch", "brunch spot",
     ],
-    "Date Night": [
-        "date night", "romantic", "date spot", "anniversary", "intimate",
-        "candles", "mood lighting", "couples", "perfect for a date",
+    "Date Night": [ "date night", "romantic", "date spot", "anniversary", "intimate", "candles", "mood lighting", "couples", "perfect for a date",
     ],
-    "Hidden Gem": [
-        "hidden gem", "underrated", "off the beaten path", "secret spot",
-        "overlooked", "under the radar", "best kept secret", "undiscovered",
+    "Hidden Gem": ["hidden gem", "underrated", "off the beaten path", "secret spot", "overlooked", "under the radar", "best kept secret", "undiscovered",
     ],
-    "Aesthetic": [
-        "aesthetic", "instagrammable", "beautiful decor", "stunning",
-        "gorgeous", "photogenic", "cozy atmosphere", "ambiance", "vibes",
+    "Aesthetic": ["aesthetic", "instagrammable", "beautiful decor", "stunning", "gorgeous", "photogenic", "cozy atmosphere", "ambiance", "vibes",
     ],
-    "Family-Friendly": [
-        "family friendly", "kid friendly", "kids menu", "families",
-        "children", "highchair", "stroller", "family atmosphere",
+    "Family-Friendly": [ "family friendly", "kid friendly", "kids menu", "families", "children", "highchair", "stroller", "family atmosphere",
     ],
-    "Late Night": [
-        "late night", "open late", "after hours", "midnight", "night owl",
-        "2am", "1am", "late night eats", "bar vibes",
+    "Late Night": [ "late night", "open late", "after hours", "midnight", "night owl", "2am", "1am", "late night eats", "bar vibes",
     ],
-    "Trendy": [
-        "trendy", "hip", "cool", "popular", "buzzing", "hot spot",
-        "instagram worthy", "happening", "stylish", "modern",
+    "Trendy": [ "trendy", "hip", "cool", "popular", "buzzing", "hot spot", "instagram worthy", "happening", "stylish", "modern",
     ],
 }
 
@@ -111,8 +95,6 @@ def assign_tags(text: str) -> list[str]:
         if any(kw in text_lower for kw in keywords):
             tags.append(tag)
     return tags
-
-
 def preprocess_dataframe(df: pd.DataFrame, nlp=None) -> pd.DataFrame:
     print("Cleaning text...")
     df = df.copy()
@@ -130,14 +112,11 @@ def preprocess_dataframe(df: pd.DataFrame, nlp=None) -> pd.DataFrame:
         df[f"tag_{tag.lower().replace(' ', '_').replace('-', '_')}"] = df["tags"].apply(
             lambda t: 1 if tag in t else 0
         )
-
     return df
 
 
 def get_tag_columns(df: pd.DataFrame) -> list[str]:
     return [c for c in df.columns if c.startswith("tag_")]
-
-
 def train_val_test_split(df: pd.DataFrame, val_frac=0.1, test_frac=0.1, seed=42):
     df = df.sample(frac=1, random_state=seed).reset_index(drop=True)
     n = len(df)
@@ -147,8 +126,6 @@ def train_val_test_split(df: pd.DataFrame, val_frac=0.1, test_frac=0.1, seed=42)
     val = df.iloc[n_test: n_test + n_val]
     train = df.iloc[n_test + n_val:]
     return train.reset_index(drop=True), val.reset_index(drop=True), test.reset_index(drop=True)
-
-
 def build_restaurant_profiles(df: pd.DataFrame) -> pd.DataFrame:
     tag_cols = get_tag_columns(df)
     agg = {
@@ -163,7 +140,6 @@ def build_restaurant_profiles(df: pd.DataFrame) -> pd.DataFrame:
 
     profiles = df.groupby("business_id").agg(agg).reset_index()
     profiles.rename(columns={"stars": "avg_stars"}, inplace=True)
-
     sent_counts = (
         df.groupby(["business_id", "sentiment"])
         .size()
@@ -177,7 +153,6 @@ def build_restaurant_profiles(df: pd.DataFrame) -> pd.DataFrame:
     total = profiles[["n_positive", "n_neutral", "n_negative"]].sum(axis=1).clip(lower=1)
     profiles["positive_ratio"] = profiles["n_positive"] / total
     return profiles
-
 
 def make_sample_dataset(n=2000, seed=42):
     rng = np.random.default_rng(seed)
@@ -198,7 +173,6 @@ def make_sample_dataset(n=2000, seed=42):
             snippets.append(rng.choice(TAG_KEYWORDS[t]))
         texts.append(" ".join(snippets))
         stars_list.append(star)
-
     biz_ids = [f"biz_{i % 200:04d}" for i in range(n)]
     names = [f"Restaurant {i % 200}" for i in range(n)]
     df = pd.DataFrame({

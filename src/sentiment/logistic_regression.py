@@ -31,7 +31,6 @@ class LRSentimentModel:
     def predict(self, texts) -> list[str]:
         y_pred = self.pipeline.predict(texts)
         return self.label_encoder.inverse_transform(y_pred).tolist()
-
     def predict_proba(self, texts) -> np.ndarray:
         return self.pipeline.predict_proba(texts)
 
@@ -40,9 +39,7 @@ class LRSentimentModel:
         preds = self.predict(texts)
         elapsed = time.time() - start
         return preds, elapsed
-
     def get_top_tfidf_tokens(self, n=20) -> dict:
-        """Return top n TF-IDF tokens per class by LR coefficient."""
         tfidf = self.pipeline.named_steps["tfidf"]
         clf = self.pipeline.named_steps["clf"]
         feature_names = np.array(tfidf.get_feature_names_out())

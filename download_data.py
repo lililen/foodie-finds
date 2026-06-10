@@ -2,9 +2,9 @@ import kagglehub
 import shutil
 import os
 
-print("Downloading Yelp dataset from Kaggle...")
+print("Yelp dataset from Kaggle.")
 path = kagglehub.dataset_download("yelp-dataset/yelp-dataset")
-print("Downloaded to:", path)
+print("downloaded to:", path)
 
 dest = os.path.join(os.path.dirname(__file__), "data")
 os.makedirs(dest, exist_ok=True)
@@ -16,9 +16,9 @@ needed = [
 for fname in needed:
     src = os.path.join(path, fname)
     if os.path.exists(src):
-        print(f"Copying {fname} -> data/")
+        print(f"copying {fname} into data/")
         shutil.copy2(src, os.path.join(dest, fname))
     else:
         print(f"WARNING: {fname} not found at {src}")
 
-print("Done. Files are in the data/ folder.")
+print("files are in the data/ folder.")

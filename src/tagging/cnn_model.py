@@ -17,7 +17,6 @@ class TagDataset(Dataset):
 
     def __len__(self):
         return len(self.labels)
-
     def __getitem__(self, idx):
         return torch.tensor(self.encodings[idx], dtype=torch.long), self.labels[idx]
 
@@ -31,12 +30,12 @@ class TextCNN(nn.Module):
         ])
         self.dropout = nn.Dropout(dropout)
         self.fc = nn.Linear(num_filters * len(filter_sizes), num_classes)
-
     def forward(self, x):
         emb = self.embedding(x).permute(0, 2, 1)
         pooled = [torch.relu(conv(emb)).max(dim=2).values for conv in self.convs]
         out = torch.cat(pooled, dim=1)
         return self.fc(self.dropout(out))
+
 
 
 class CNNTaggerModel:
@@ -48,7 +47,7 @@ class CNNTaggerModel:
         max_len=256,
         batch_size=64,
         epochs=5,
-        lr=1e-3,
+        lr=1e-3, #small number no need to have massive change or else takes away meaning of its training 
         threshold=0.5,
         device=None,
     ):

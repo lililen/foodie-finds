@@ -7,6 +7,7 @@ from transformers import AutoTokenizer, AutoModelForSequenceClassification, get_
 from sklearn.preprocessing import LabelEncoder
 
 
+
 class BERTReviewDataset(Dataset):
     def __init__(self, texts, labels, tokenizer, max_len=128):
         self.encodings = tokenizer(

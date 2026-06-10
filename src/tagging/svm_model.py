@@ -13,7 +13,6 @@ class SVMTaggerModel:
             CalibratedClassifierCV(LinearSVC(C=C, max_iter=2000))
         )
         self.tag_names = None
-
     def fit(self, texts, Y, tag_names):
         self.tag_names = tag_names
         X = self.tfidf.fit_transform(texts)
@@ -21,15 +20,12 @@ class SVMTaggerModel:
         self.clf.fit(X, Y)
         self.train_time_ = time.time() - start
         return self
-
     def predict(self, texts) -> np.ndarray:
         X = self.tfidf.transform(texts)
         return self.clf.predict(X)
-
     def predict_proba(self, texts) -> np.ndarray:
         X = self.tfidf.transform(texts)
         return self.clf.predict_proba(X)
-
     def timed_predict(self, texts):
         start = time.time()
         preds = self.predict(texts)

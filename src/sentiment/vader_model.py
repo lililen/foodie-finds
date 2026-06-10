@@ -8,7 +8,6 @@ class VADERSentimentModel:
         self.analyzer = SentimentIntensityAnalyzer()
         self.positive_thresh = positive_thresh
         self.negative_thresh = negative_thresh
-
     def predict_one(self, text: str) -> str:
         score = self.analyzer.polarity_scores(text)["compound"]
         if score >= self.positive_thresh:
@@ -16,10 +15,8 @@ class VADERSentimentModel:
         elif score <= self.negative_thresh:
             return "Negative"
         return "Neutral"
-
     def predict(self, texts) -> list[str]:
         return [self.predict_one(t) for t in texts]
-
     def predict_proba(self, texts) -> np.ndarray:
         results = []
         for t in texts:
@@ -29,7 +26,6 @@ class VADERSentimentModel:
 
     def fit(self, texts, labels):
         return self
-
     def timed_predict(self, texts):
         start = time.time()
         preds = self.predict(texts)
