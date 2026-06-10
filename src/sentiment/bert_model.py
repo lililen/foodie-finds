@@ -30,8 +30,6 @@ class BERTReviewDataset(Dataset):
 
 
 class BERTSentimentModel:
-    """BERT fine-tuned for sentiment classification."""
-
     def __init__(
         self,
         model_name="distilbert-base-uncased",

@@ -40,7 +40,6 @@ QUERY_TAG_SYNONYMS = {
 
 
 def parse_query(query: str) -> dict:
-    """Extract cuisine keywords, city, and lifestyle tags from a free-text query."""
     q = query.lower()
 
     detected_tags = set()
@@ -52,7 +51,9 @@ def parse_query(query: str) -> dict:
     city_patterns = [
         "san francisco", "las vegas", "new york", "los angeles", "chicago",
         "seattle", "austin", "portland", "phoenix", "charlotte", "nashville",
-        "denver", "miami", "boston", "atlanta",
+        "denver", "miami", "boston", "atlanta", "philadelphia", "tampa",
+        "indianapolis", "new orleans", "tucson", "reno", "edmonton",
+        "boise", "st. louis", "saint louis",
     ]
     for c in city_patterns:
         if c in q:
@@ -83,16 +84,6 @@ def compute_match_scores(
     weights: Optional[dict] = None,
     top_k: int = 20,
 ) -> pd.DataFrame:
-    """
-    Compute a Match Score (0–10) for every restaurant given a parsed query.
-
-    Weights (default):
-        sentiment   0.30
-        tag_match   0.30
-        stars       0.20
-        volume      0.10
-        cuisine     0.10
-    """
     if weights is None:
         weights = {
             "sentiment": 0.30,
@@ -104,12 +95,10 @@ def compute_match_scores(
 
     df = profiles.copy()
 
-    # --- sentiment score (positive ratio, already 0-1) ---
     if "positive_ratio" not in df.columns:
         df["positive_ratio"] = 0.5
     sentiment_score = df["positive_ratio"].fillna(0.5)
 
-    # --- tag match score ---
     query_tags = parsed_query.get("tags", [])
     if query_tags:
         tag_scores = pd.Series(np.zeros(len(df)), index=df.index)
@@ -121,16 +110,13 @@ def compute_match_scores(
     else:
         tag_match_score = pd.Series(np.ones(len(df)) * 0.5, index=df.index)
 
-    # --- star rating score (normalize 1-5 → 0-1) ---
     star_col = "avg_stars" if "avg_stars" in df.columns else "stars_business"
     stars_score = ((df[star_col].fillna(3) - 1) / 4).clip(0, 1)
 
-    # --- review volume score (log-normalized) ---
     vol = df["review_count"].fillna(1).clip(lower=1)
     log_vol = np.log1p(vol)
     volume_score = (log_vol / log_vol.max()).clip(0, 1)
 
-    # --- cuisine match score ---
     cuisine_kws = parsed_query.get("cuisine_keywords", [])
     if cuisine_kws and "categories" in df.columns:
         def cuisine_hit(cats):
@@ -140,7 +126,17 @@ def compute_match_scores(
     else:
         cuisine_score = pd.Series(np.zeros(len(df)), index=df.index)
 
-    # --- city filter ---
+    if cuisine_kws and "categories" in df.columns:
+        cuisine_mask = df["categories"].apply(
+            lambda cats: any(kw in str(cats).lower() for kw in cuisine_kws)
+        )
+        df = df[cuisine_mask].copy()
+        sentiment_score = sentiment_score[cuisine_mask]
+        tag_match_score = tag_match_score[cuisine_mask]
+        stars_score = stars_score[cuisine_mask]
+        volume_score = volume_score[cuisine_mask]
+        cuisine_score = cuisine_score[cuisine_mask]
+
     query_city = parsed_query.get("city")
     if query_city and "city" in df.columns:
         city_mask = df["city"].str.lower().str.contains(query_city.lower(), na=False)
@@ -151,7 +147,6 @@ def compute_match_scores(
         volume_score = volume_score[city_mask]
         cuisine_score = cuisine_score[city_mask]
 
-    # --- weighted sum → 0-10 ---
     raw_score = (
         weights["sentiment"] * sentiment_score
         + weights["tag_match"] * tag_match_score
@@ -172,7 +167,6 @@ def compute_match_scores(
 
 
 def ablation_study(profiles: pd.DataFrame, parsed_query: dict) -> pd.DataFrame:
-    """Compare match score rankings with each component zeroed out."""
     base_weights = {
         "sentiment": 0.30,
         "tag_match": 0.30,

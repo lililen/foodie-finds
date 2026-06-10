@@ -6,8 +6,6 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 
 
 class RFTaggerModel:
-    """Random Forest (OneVsRest) multi-label tag classifier on TF-IDF."""
-
     def __init__(self, max_features=20_000, n_estimators=200, n_jobs=-1):
         self.tfidf = TfidfVectorizer(max_features=max_features, sublinear_tf=True)
         self.clf = OneVsRestClassifier(

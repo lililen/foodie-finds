@@ -12,10 +12,6 @@ from sklearn.metrics import (
 )
 
 
-# ---------------------------------------------------------------------------
-# Sentiment evaluation
-# ---------------------------------------------------------------------------
-
 def sentiment_report(y_true, y_pred, model_name: str = "") -> dict:
     labels = ["Negative", "Neutral", "Positive"]
     acc = accuracy_score(y_true, y_pred)
@@ -83,10 +79,6 @@ def plot_train_vs_f1(results: list[dict], save_path: str = None):
         fig.savefig(save_path, dpi=150)
     return fig
 
-
-# ---------------------------------------------------------------------------
-# Tag classification evaluation
-# ---------------------------------------------------------------------------
 
 def tag_report(Y_true, Y_pred, tag_names: list[str], model_name: str = "") -> dict:
     hl = hamming_loss(Y_true, Y_pred)
@@ -159,10 +151,6 @@ def plot_tag_model_comparison(results: list[dict], save_path: str = None):
     return fig
 
 
-# ---------------------------------------------------------------------------
-# Ranking / score visualization
-# ---------------------------------------------------------------------------
-
 def plot_match_score_distribution(results_df: pd.DataFrame, query: str = "", save_path: str = None):
     fig, ax = plt.subplots(figsize=(8, 4))
     ax.barh(
@@ -198,5 +186,4 @@ def plot_score_breakdown(row: pd.Series, save_path: str = None):
 
 
 def build_comparison_table(results: list[dict]) -> pd.DataFrame:
-    """Flatten a list of result dicts into a side-by-side comparison DataFrame."""
     return pd.DataFrame(results).set_index("model")

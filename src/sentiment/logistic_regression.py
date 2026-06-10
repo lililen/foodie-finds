@@ -7,8 +7,6 @@ from sklearn.preprocessing import LabelEncoder
 
 
 class LRSentimentModel:
-    """Logistic Regression on TF-IDF features for sentiment classification."""
-
     def __init__(self, max_features=50_000, ngram_range=(1, 2), C=1.0, max_iter=1000):
         self.pipeline = Pipeline([
             ("tfidf", TfidfVectorizer(
@@ -17,7 +15,7 @@ class LRSentimentModel:
                 sublinear_tf=True,
                 min_df=3,
             )),
-            ("clf", LogisticRegression(C=C, max_iter=max_iter, solver="lbfgs", multi_class="multinomial")),
+            ("clf", LogisticRegression(C=C, max_iter=max_iter, solver="lbfgs")),
         ])
         self.label_encoder = LabelEncoder()
         self.classes_ = None

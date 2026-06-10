@@ -5,7 +5,6 @@ import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader
 from sklearn.preprocessing import LabelEncoder
 
-# Re-use Vocab from lstm_model
 import sys, os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
 from sentiment.lstm_model import Vocab
@@ -24,8 +23,6 @@ class TagDataset(Dataset):
 
 
 class TextCNN(nn.Module):
-    """1D CNN for text classification (Kim, 2014)."""
-
     def __init__(self, vocab_size, embed_dim, num_filters, filter_sizes, num_classes, dropout=0.5):
         super().__init__()
         self.embedding = nn.Embedding(vocab_size, embed_dim, padding_idx=0)
@@ -43,8 +40,6 @@ class TextCNN(nn.Module):
 
 
 class CNNTaggerModel:
-    """Text CNN multi-label tag classifier using word embeddings."""
-
     def __init__(
         self,
         embed_dim=128,
@@ -128,7 +123,6 @@ class CNNTaggerModel:
         return preds, elapsed
 
     def get_filter_activations(self, text: str) -> dict:
-        """Return max activation per filter for a single review (interpretability)."""
         self.model.eval()
         enc = torch.tensor([self.vocab.encode(text, self.max_len)], dtype=torch.long).to(self.device)
         emb = self.model.embedding(enc).permute(0, 2, 1)

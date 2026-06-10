@@ -11,9 +11,6 @@ from tqdm import tqdm
 nltk.download("stopwords", quiet=True)
 nltk.download("wordnet", quiet=True)
 
-# ---------------------------------------------------------------------------
-# Tag keyword lexicon
-# ---------------------------------------------------------------------------
 TAG_KEYWORDS = {
     "Quiet": [
         "quiet", "peaceful", "calm", "serene", "tranquil", "low-key",
@@ -53,7 +50,6 @@ SENTIMENT_MAP = {1: "Negative", 2: "Negative", 3: "Neutral", 4: "Positive", 5: "
 
 
 def load_yelp_reviews(reviews_path: str, businesses_path: str, max_reviews: int = 500_000) -> pd.DataFrame:
-    """Load Yelp JSON files and merge reviews with restaurant business metadata."""
     print("Loading businesses...")
     businesses = []
     with open(businesses_path, "r", encoding="utf-8") as f:
@@ -118,7 +114,6 @@ def assign_tags(text: str) -> list[str]:
 
 
 def preprocess_dataframe(df: pd.DataFrame, nlp=None) -> pd.DataFrame:
-    """Clean text, assign sentiment labels and multi-hot tag columns."""
     print("Cleaning text...")
     df = df.copy()
     df["text_clean"] = df["text"].apply(clean_text)
@@ -155,7 +150,6 @@ def train_val_test_split(df: pd.DataFrame, val_frac=0.1, test_frac=0.1, seed=42)
 
 
 def build_restaurant_profiles(df: pd.DataFrame) -> pd.DataFrame:
-    """Aggregate per-restaurant sentiment and tag statistics."""
     tag_cols = get_tag_columns(df)
     agg = {
         "stars": "mean",
@@ -186,7 +180,6 @@ def build_restaurant_profiles(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def make_sample_dataset(n=2000, seed=42):
-    """Generate a tiny synthetic dataset for quick smoke-testing without the full Yelp files."""
     rng = np.random.default_rng(seed)
     tag_keys = list(TAG_KEYWORDS.keys())
     texts = []

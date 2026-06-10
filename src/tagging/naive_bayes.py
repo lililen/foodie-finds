@@ -7,8 +7,6 @@ from sklearn.pipeline import Pipeline
 
 
 class NBTaggerModel:
-    """Multinomial Naive Bayes (OneVsRest) multi-label tag classifier."""
-
     def __init__(self, max_features=30_000, ngram_range=(1, 2), alpha=1.0):
         self.tfidf = TfidfVectorizer(max_features=max_features, ngram_range=ngram_range, sublinear_tf=True)
         self.clf = OneVsRestClassifier(MultinomialNB(alpha=alpha))
@@ -17,7 +15,6 @@ class NBTaggerModel:
     def fit(self, texts, Y, tag_names):
         self.tag_names = tag_names
         X = self.tfidf.fit_transform(texts)
-        # MultinomialNB needs non-negative input — TF-IDF is fine
         start = time.time()
         self.clf.fit(X, Y)
         self.train_time_ = time.time() - start

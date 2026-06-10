@@ -7,8 +7,6 @@ from sklearn.calibration import CalibratedClassifierCV
 
 
 class SVMTaggerModel:
-    """Linear SVM (OneVsRest) multi-label tag classifier on TF-IDF."""
-
     def __init__(self, max_features=30_000, ngram_range=(1, 2), C=1.0):
         self.tfidf = TfidfVectorizer(max_features=max_features, ngram_range=ngram_range, sublinear_tf=True)
         self.clf = OneVsRestClassifier(

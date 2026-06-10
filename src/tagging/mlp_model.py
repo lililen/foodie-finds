@@ -8,13 +8,11 @@ from gensim.downloader import load as gensim_load
 
 
 def load_word_embeddings(source="glove-wiki-gigaword-100"):
-    """Load pre-trained word vectors via gensim (GloVe 100d by default)."""
     print(f"Loading word embeddings: {source}")
     return gensim_load(source)
 
 
 def texts_to_embedding_matrix(texts, wv, dim=100, max_len=256):
-    """Mean-pool word vectors for each review into a fixed-dim vector."""
     X = np.zeros((len(texts), dim), dtype=np.float32)
     for i, text in enumerate(texts):
         tokens = text.lower().split()[:max_len]
@@ -40,8 +38,6 @@ class MLP(nn.Module):
 
 
 class MLPTaggerModel:
-    """MLP on mean-pooled Word Embeddings for multi-label tag classification."""
-
     def __init__(
         self,
         wv=None,

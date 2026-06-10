@@ -71,8 +71,6 @@ class BiLSTM(nn.Module):
 
 
 class LSTMSentimentModel:
-    """Bidirectional LSTM sentiment classifier."""
-
     def __init__(self, embed_dim=128, hidden_dim=256, num_layers=2,
                  max_len=256, batch_size=128, epochs=5, lr=1e-3, device=None):
         self.embed_dim = embed_dim
