@@ -1,5 +1,9 @@
 # Foodie Finds Project Summary
 
+## Google Drive Files:
+
+https://drive.google.com/drive/folders/1P1769hdOJotIOQPjypusVGRPsC1aYd25?usp=sharing
+
 ## Non-Technical Summary
 
 Foodie Finds is a restaurant recommendation app. You type a natural language description of what you're looking for (e.g. "a quiet Chinese family spot popular for lunch") and it returns a ranked list of restaurants with a match percentage showing how well each one fits the query.
